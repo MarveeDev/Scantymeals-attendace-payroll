@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-title">Total Active Workers</div>
+        <div class="stat-value">{{ total_active }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">Present Today</div>
+        <div class="stat-value" style="color: var(--success)">{{ present_today }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">Absent Today</div>
+        <div class="stat-value" style="color: var(--danger)">{{ absent_today }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">Not Marked Today</div>
+        <div class="stat-value" style="color: var(--warning)">{{ not_marked }}</div>
+    </div>
+</div>
+
+<div class="table-wrapper">
+    <div style="padding: 1.5rem; border-bottom: 1px solid var(--border);">
+        <h2>Quick Actions</h2>
+    </div>
+    <div style="padding: 1.5rem; display: flex; gap: 1rem;">
+        <a href="{{ url_for('attendance.index') }}" class="btn btn-primary">Mark Attendance</a>
+        <a href="{{ url_for('payroll.index') }}" class="btn btn-secondary">Generate Payroll</a>
+        <a href="{{ url_for('workers.add') }}" class="btn btn-secondary">Add Worker</a>
+    </div>
+</div>
+{% endblock %}

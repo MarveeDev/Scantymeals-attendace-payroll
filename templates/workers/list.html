@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block page_title %}Workers{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between;">
+    <a href="{{ url_for('workers.add') }}" class="btn btn-primary">Add New Worker</a>
+    <div>
+        <a href="{{ url_for('workers.index', status='active') }}" class="btn {% if active_only %}btn-primary{% else %}btn-secondary{% endif %}">Active</a>
+        <a href="{{ url_for('workers.index', status='all') }}" class="btn {% if not active_only %}btn-primary{% else %}btn-secondary{% endif %}">All</a>
+    </div>
+</div>
+
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Staff ID</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for worker in workers %}
+            <tr>
+                <td>{{ worker.staff_id }}</td>
+                <td>{{ worker.full_name }}</td>
+                <td>{{ worker.role }}</td>
+                <td>
+                    {% if worker.active %}
+                    <span class="badge badge-present">Active</span>
+                    {% else %}
+                    <span class="badge badge-absent">Inactive</span>
+                    {% endif %}
+                </td>
+                <td>{{ worker.date_joined }}</td>
+                <td>
+                    <a href="{{ url_for('workers.profile', worker_id=worker._id) }}" class="btn btn-sm btn-secondary">Profile</a>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not workers %}
+            <tr>
+                <td colspan="6" style="text-align: center;">No workers found.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

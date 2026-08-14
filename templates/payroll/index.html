@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block page_title %}Payroll Generation{% endblock %}
+
+{% block content %}
+<div class="auth-card" style="max-width: 800px; margin: 0 auto;">
+    <form method="POST">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="form-group" style="grid-column: span 2;">
+                <label>Select Worker</label>
+                <select name="worker_id" required>
+                    <option value="">-- Choose Worker --</option>
+                    {% for worker in workers %}
+                    <option value="{{ worker._id }}">{{ worker.full_name }} ({{ worker.staff_id }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group" style="grid-column: span 2;">
+                <label>Period Type</label>
+                <select name="period_type" id="period_type" required>
+                    <option value="Weekly">Weekly</option>
+                    <option value="Monthly">Monthly</option>
+                    <option value="Custom">Custom Period</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Start Date</label>
+                <input type="date" name="start_date" required>
+            </div>
+            
+            <div class="form-group">
+                <label>End Date</label>
+                <input type="date" name="end_date" required>
+            </div>
+        </div>
+        
+        <div style="margin-top: 1.5rem; text-align: right;">
+            <button type="submit" class="btn btn-primary">Calculate Draft Payroll</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

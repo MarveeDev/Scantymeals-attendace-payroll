@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block page_title %}Reports{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card" style="cursor: pointer;" onclick="window.location='{{ url_for('reports.attendance') }}'">
+        <div class="stat-title">Attendance Report</div>
+        <div class="stat-value" style="font-size: 1.25rem;">View & Export</div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">Generate attendance reports by date range and worker.</p>
+    </div>
+    
+    <!-- Future reports can go here (e.g. Payroll Report) -->
+</div>
+{% endblock %}

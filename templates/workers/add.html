@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block page_title %}Add Worker{% endblock %}
+
+{% block content %}
+<div class="auth-card" style="max-width: 600px; margin: 0 auto;">
+    <form method="POST">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="full_name" required>
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" name="phone">
+            </div>
+            <div class="form-group">
+                <label>Role</label>
+                <input type="text" name="role" value="Worker">
+            </div>
+            <div class="form-group">
+                <label>Date Joined</label>
+                <input type="date" name="date_joined" value="{{ default_date }}" required>
+            </div>
+            <div class="form-group">
+                <label>Weekly Salary (GH₵)</label>
+                <input type="number" name="weekly_salary" value="200" required>
+            </div>
+            <div class="form-group">
+                <label>Monthly Salary (GH₵)</label>
+                <input type="number" name="monthly_salary" value="800" required>
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+                <label>Notes</label>
+                <textarea name="notes" rows="3"></textarea>
+            </div>
+        </div>
+        <div style="margin-top: 1.5rem; text-align: right;">
+            <a href="{{ url_for('workers.index') }}" class="btn btn-secondary" style="margin-right: 0.5rem;">Cancel</a>
+            <button type="submit" class="btn btn-primary">Add Worker</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

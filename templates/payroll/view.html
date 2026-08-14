@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block page_title %}Payroll Details: {{ worker.full_name }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between;">
+    <a href="{{ url_for('payroll.index') }}" class="btn btn-secondary">Back to Payroll</a>
+    
+    <div>
+        {% if not payroll.is_finalized %}
+        <form action="{{ url_for('payroll.finalize', payroll_id=payroll._id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to finalize this payroll? It cannot be changed once finalized.');">
+            <button type="submit" class="btn btn-warning">Finalize Payroll</button>
+        </form>
+        {% else %}
+        <a href="{{ url_for('payments.record', payroll_id=payroll._id) }}" class="btn btn-success">Record Payment</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-title">Status</div>
+        <div class="stat-value">
+            {% if payroll.is_finalized %}
+            <span style="color: var(--success);">Finalized</span>
+            {% else %}
+            <span style="color: var(--warning);">Draft</span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">Period</div>
+        <div class="stat-value" style="font-size: 1.25rem;">
+            {{ payroll.period_start }} to {{ payroll.period_end }}<br>
+            <small style="color: var(--text-muted); font-size: 0.8rem;">({{ payroll.period_type }})</small>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">Payment Status</div>
+        <div class="stat-value">
+            {% if payroll.payment_status == 'Paid' %}
+                <span style="color: var(--success);">{{ payroll.payment_status }}</span>
+            {% elif payroll.payment_status == 'Partially Paid' %}
+                <span style="color: var(--warning);">{{ payroll.payment_status }}</span>
+            {% else %}
+                <span style="color: var(--danger);">{{ payroll.payment_status }}</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="auth-card" style="max-width: 100%; margin-top: 2rem;">
+    <h3>Attendance Summary</h3>
+    <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; margin-top: 1rem;">
+        <div class="stat-card" style="padding: 1rem;">
+            <div class="stat-title">Eligible</div>
+            <div class="stat-value">{{ payroll.eligible_days|default(0) }}</div>
+        </div>
+        <div class="stat-card" style="padding: 1rem;">
+            <div class="stat-title">Present</div>
+            <div class="stat-value" style="color: var(--success);">{{ payroll.present_days|default(0) }}</div>
+        </div>
+        <div class="stat-card" style="padding: 1rem;">
+            <div class="stat-title">Absent</div>
+            <div class="stat-value" style="color: var(--danger);">{{ payroll.absent_days|default(payroll.absence_count) }}</div>
+        </div>
+        <div class="stat-card" style="padding: 1rem;">
+            <div class="stat-title">Not Marked</div>
+            <div class="stat-value" style="color: #a0aec0;">{{ payroll.not_marked_days|default(0) }}</div>
+        </div>
+        <div class="stat-card" style="padding: 1rem;">
+            <div class="stat-title">Rate</div>
+            <div class="stat-value" style="color: var(--accent);">{{ payroll.attendance_rate|default(0) }}%</div>
+        </div>
+    </div>
+</div>
+
+<div class="auth-card" style="max-width: 100%; margin-top: 2rem;">
+    <h3>Calculation Summary</h3>
+    
+    {% if payroll.not_marked_days and payroll.not_marked_days > 0 %}
+    <div class="alert alert-warning" style="margin-top: 1rem;">
+        <strong>Notice:</strong> There are {{ payroll.not_marked_days }} days in this period that have not been marked in attendance. They are NOT counted as absent and do not automatically incur deductions unless they are explicitly marked as Absent.
+    </div>
+    {% endif %}
+    
+    <table style="width: 100%; margin-top: 1rem; font-size: 1.1rem;">
+        <tr>
+            <td style="padding: 1rem 0; border-bottom: 1px solid var(--border);"><strong>Base Rate Used:</strong></td>
+            <td style="padding: 1rem 0; text-align: right; border-bottom: 1px solid var(--border);">GH₵{{ payroll.salary_rate_used }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 1rem 0; border-bottom: 1px solid var(--border);"><strong>Gross Amount:</strong></td>
+            <td style="padding: 1rem 0; text-align: right; border-bottom: 1px solid var(--border);">GH₵{{ payroll.gross_amount }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 1rem 0; border-bottom: 1px solid var(--border);"><strong>Absences ({{ payroll.absence_count }} days):</strong></td>
+            <td style="padding: 1rem 0; text-align: right; border-bottom: 1px solid var(--border); color: var(--danger);">-GH₵{{ payroll.deduction_amount }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 1.5rem 0 0 0; font-size: 1.25rem;"><strong>Net Amount:</strong></td>
+            <td style="padding: 1.5rem 0 0 0; text-align: right; font-size: 1.25rem; font-weight: bold; color: var(--success);">GH₵{{ payroll.net_amount }}</td>
+        </tr>
+    </table>
+</div>
+{% endblock %}

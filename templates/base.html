@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScantyMeals Staff & Payroll</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    {% if session.get('admin_id') %}
+    <nav class="sidebar">
+        <div class="logo">
+            <h2>ScantyMeals</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('workers.index') }}">Workers</a></li>
+            <li><a href="{{ url_for('attendance.index') }}">Attendance</a></li>
+            <li><a href="{{ url_for('payroll.index') }}">Payroll</a></li>
+            <li><a href="{{ url_for('reports.index') }}">Reports</a></li>
+            <li><a href="{{ url_for('settings.index') }}">Settings</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="{{ url_for('auth.logout') }}" class="btn-logout">Logout</a>
+        </div>
+    </nav>
+    <main class="content">
+        <header class="topbar">
+            <h1>{% block page_title %}{% endblock %}</h1>
+        </header>
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                <div class="flash-messages">
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+            
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+    {% else %}
+    <div class="auth-wrapper">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages auth-flash">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
+        {% block auth_content %}{% endblock %}
+    </div>
+    {% endif %}
+</body>
+</html>

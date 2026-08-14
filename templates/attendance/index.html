@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block page_title %}Attendance{% endblock %}
+
+{% block content %}
+<div class="auth-card" style="max-width: 100%; margin-bottom: 2rem;">
+    <form method="GET" style="display: flex; gap: 1rem; align-items: flex-end;">
+        <div class="form-group" style="margin-bottom: 0; flex: 1;">
+            <label>Select Date</label>
+            <input type="date" name="date" value="{{ date }}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">View Date</button>
+    </form>
+</div>
+
+<div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+    <h2>Attendance for {{ date }}</h2>
+    
+    <form method="POST" action="{{ url_for('attendance.mark_all') }}" onsubmit="return confirm('Mark all unmarked workers as Present for {{ date }}?');">
+        <input type="hidden" name="date" value="{{ date }}">
+        <button type="submit" class="btn btn-success">Mark All Present</button>
+    </form>
+</div>
+
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Staff ID</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for worker in workers %}
+            {% set record = att_map.get(worker._id|string) %}
+            <tr>
+                <td>{{ worker.staff_id }}</td>
+                <td>{{ worker.full_name }}</td>
+                <td>
+                    {% if record %}
+                        {% if record.status == 'present' %}
+                            <span class="badge badge-present">Present</span>
+                        {% else %}
+                            <span class="badge badge-absent">Absent</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="badge badge-warning">Not Marked</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('attendance.mark') }}" style="display: flex; gap: 0.5rem;">
+                        <input type="hidden" name="date" value="{{ date }}">
+                        <input type="hidden" name="worker_id" value="{{ worker._id }}">
+                        
+                        {% if record and record.status == 'present' %}
+                            <button type="submit" name="status" value="absent" class="btn btn-sm btn-danger">Change to Absent</button>
+                        {% elif record and record.status == 'absent' %}
+                            <button type="submit" name="status" value="present" class="btn btn-sm btn-success">Change to Present</button>
+                        {% else %}
+                            <button type="submit" name="status" value="present" class="btn btn-sm btn-success">Present</button>
+                            <button type="submit" name="status" value="absent" class="btn btn-sm btn-danger">Absent</button>
+                        {% endif %}
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            
+            {% if not workers %}
+            <tr>
+                <td colspan="4" style="text-align: center;">No active workers found who joined on or before this date.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

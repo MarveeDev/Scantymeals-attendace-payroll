@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block page_title %}Settings{% endblock %}
+
+{% block content %}
+<div class="auth-card" style="max-width: 600px; margin: 0 auto;">
+    <h3 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">Payroll Configuration</h3>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label>Default Weekly Salary (GH₵)</label>
+            <input type="number" name="default_weekly_salary" value="{{ settings.default_weekly_salary }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Default Monthly Salary (GH₵)</label>
+            <input type="number" name="default_monthly_salary" value="{{ settings.default_monthly_salary }}" required>
+        </div>
+        
+        <h3 style="margin: 2rem 0 1.5rem 0; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">Absence Deduction Rules</h3>
+        
+        <div class="form-group">
+            <label>Deduction Method</label>
+            <select name="absence_deduction_method" required>
+                <option value="fixed" {% if settings.absence_deduction_method == 'fixed' %}selected{% endif %}>Fixed Amount per Absence</option>
+                <option value="percentage" {% if settings.absence_deduction_method == 'percentage' %}selected{% endif %}>Percentage of Gross per Absence</option>
+                <option value="pro_rated" {% if settings.absence_deduction_method == 'pro_rated' %}selected{% endif %}>Pro-Rated (Gross ÷ Value)</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Deduction Value</label>
+            <input type="number" step="0.01" name="absence_deduction_value" value="{{ settings.absence_deduction_value }}" required>
+            <small style="color: var(--text-muted); display: block; margin-top: 0.5rem;">
+                If Fixed: Enter GH₵ amount (e.g., 25)<br>
+                If Percentage: Enter % (e.g., 5 for 5%)<br>
+                If Pro-Rated: Enter number of payable days to divide by (e.g., 26)
+            </small>
+        </div>
+        
+        <div style="margin-top: 2rem; text-align: right;">
+            <button type="submit" class="btn btn-primary">Save Settings</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

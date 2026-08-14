@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block page_title %}Worker Profile: {{ worker.full_name }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between;">
+    <a href="{{ url_for('workers.index') }}" class="btn btn-secondary">Back to List</a>
+    <div>
+        <a href="{{ url_for('workers.edit', worker_id=worker._id) }}" class="btn btn-primary">Edit Worker</a>
+        
+        {% if worker.active %}
+        <form action="{{ url_for('workers.deactivate', worker_id=worker._id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to deactivate this worker?');">
+            <button type="submit" class="btn btn-danger">Deactivate</button>
+        </form>
+        {% else %}
+        <form action="{{ url_for('workers.reactivate', worker_id=worker._id) }}" method="POST" style="display:inline;">
+            <button type="submit" class="btn btn-success">Reactivate</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-title">Status</div>
+        <div class="stat-value">
+            {% if worker.active %}
+            <span style="color: var(--success);">Active</span>
+            {% else %}
+            <span style="color: var(--danger);">Inactive</span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">Staff ID</div>
+        <div class="stat-value">{{ worker.staff_id }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">Current Weekly</div>
+        <div class="stat-value">GH₵{{ worker.weekly_salary }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">Current Monthly</div>
+        <div class="stat-value">GH₵{{ worker.monthly_salary }}</div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+    <!-- Details -->
+    <div class="auth-card" style="max-width: 100%;">
+        <h3>Personal Information</h3>
+        <p style="margin-top: 1rem;"><strong style="color: var(--text-muted)">Role:</strong> {{ worker.role }}</p>
+        <p style="margin-top: 0.5rem;"><strong style="color: var(--text-muted)">Phone:</strong> {{ worker.phone or 'N/A' }}</p>
+        <p style="margin-top: 0.5rem;"><strong style="color: var(--text-muted)">Joined:</strong> {{ worker.date_joined }}</p>
+        {% if worker.employment_end_date %}
+        <p style="margin-top: 0.5rem;"><strong style="color: var(--text-muted)">Left:</strong> {{ worker.employment_end_date }}</p>
+        {% endif %}
+        <p style="margin-top: 0.5rem;"><strong style="color: var(--text-muted)">Notes:</strong> {{ worker.notes or 'None' }}</p>
+    </div>
+
+    <!-- Salary History -->
+    <div class="table-wrapper">
+        <div style="padding: 1.5rem; border-bottom: 1px solid var(--border);">
+            <h3>Salary History</h3>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Effective Date</th>
+                    <th>Weekly</th>
+                    <th>Monthly</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hist in salary_history %}
+                <tr>
+                    <td>{{ hist.effective_date }}</td>
+                    <td>GH₵{{ hist.weekly_salary }}</td>
+                    <td>GH₵{{ hist.monthly_salary }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="table-wrapper" style="margin-top: 2rem; padding: 1.5rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3>Monthly Attendance Summary</h3>
+        <form method="GET" style="display: flex; gap: 0.5rem;">
+            <select name="month" class="form-group" style="margin: 0; padding: 0.5rem;">
+                {% for m in range(1, 13) %}
+                <option value="{{ m }}" {% if m == current_month %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+            </select>
+            <input type="number" name="year" value="{{ current_year }}" class="form-group" style="margin: 0; padding: 0.5rem; width: 80px;" required>
+            <button type="submit" class="btn btn-secondary" style="padding: 0.5rem 1rem;">View</button>
+        </form>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; margin-bottom: 2rem;">
+        <div class="stat-card" style="padding: 1rem;">
+            <div class="stat-title">Eligible</div>
+            <div class="stat-value" style="font-size: 1.5rem;">{{ attendance_summary.eligible_days }}</div>
+        </div>
+        <div class="stat-card" style="padding: 1rem;">
+            <div class="stat-title">Marked</div>
+            <div class="stat-value" style="font-size: 1.5rem;">{{ attendance_summary.marked_days }}</div>
+        </div>
+        <div class="stat-card" style="padding: 1rem;">
+            <div class="stat-title">Present</div>
+            <div class="stat-value" style="font-size: 1.5rem; color: var(--success);">{{ attendance_summary.present_days }}</div>
+        </div>
+        <div class="stat-card" style="padding: 1rem;">
+            <div class="stat-title">Absent</div>
+            <div class="stat-value" style="font-size: 1.5rem; color: var(--danger);">{{ attendance_summary.absent_days }}</div>
+        </div>
+        <div class="stat-card" style="padding: 1rem;">
+            <div class="stat-title">Not Marked</div>
+            <div class="stat-value" style="font-size: 1.5rem; color: #a0aec0;">{{ attendance_summary.not_marked_days }}</div>
+        </div>
+        <div class="stat-card" style="padding: 1rem;">
+            <div class="stat-title">Rate</div>
+            <div class="stat-value" style="font-size: 1.5rem; color: var(--accent);">{{ attendance_summary.attendance_rate }}%</div>
+        </div>
+    </div>
+
+    <div class="calendar-container" style="max-width: 600px; margin: 0 auto;">
+        <div style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; margin-bottom: 0.5rem; color: var(--text-muted);">
+            <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+        </div>
+        <div class="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem;">
+            {% for week in calendar_grid %}
+                {% for day_info in week %}
+                    {% if day_info.in_month %}
+                        {% set bg_color = '#2d3748' %} {% set dot_color = 'transparent' %} {% set opacity = '1' %}
+                        
+                        {% if not day_info.is_eligible %}
+                            {% set opacity = '0.4' %}
+                            {% set dot_color = '#ecc94b' %} <!-- Yellow for ineligible -->
+                        {% elif day_info.status == 'present' %}
+                            {% set dot_color = '#48bb78' %} <!-- Green -->
+                        {% elif day_info.status == 'absent' %}
+                            {% set dot_color = '#f56565' %} <!-- Red -->
+                        {% else %}
+                            {% set dot_color = '#a0aec0' %} <!-- Grey for not marked -->
+                        {% endif %}
+                        
+                        <div style="aspect-ratio: 1; background: {{ bg_color }}; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; opacity: {{ opacity }}; border: 1px solid var(--border);">
+                            <span style="font-size: 1.2rem;">{{ day_info.day }}</span>
+                            <div style="width: 8px; height: 8px; border-radius: 50%; background-color: {{ dot_color }}; margin-top: 4px;"></div>
+                        </div>
+                    {% else %}
+                        <div></div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+        
+        <div style="display: flex; justify-content: center; gap: 1.5rem; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);">
+            <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 10px; height: 10px; border-radius: 50%; background-color: #48bb78;"></div> Present</div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 10px; height: 10px; border-radius: 50%; background-color: #f56565;"></div> Absent</div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 10px; height: 10px; border-radius: 50%; background-color: #a0aec0;"></div> Not Marked</div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 10px; height: 10px; border-radius: 50%; background-color: #ecc94b;"></div> Ineligible</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
