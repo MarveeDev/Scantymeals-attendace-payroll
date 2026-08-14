@@ -3,10 +3,10 @@
 {% block page_title %}Payroll Generation{% endblock %}
 
 {% block content %}
-<div class="auth-card" style="max-width: 800px; margin: 0 auto;">
+<div class="auth-card" style="width: 100%; max-width: 800px; margin: 0 auto; box-sizing: border-box;">
     <form method="POST">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-            <div class="form-group" style="grid-column: span 2;">
+        <div class="grid-2-col">
+            <div class="form-group col-span-2">
                 <label>Select Worker</label>
                 <select name="worker_id" required>
                     <option value="">-- Choose Worker --</option>
@@ -16,7 +16,7 @@
                 </select>
             </div>
             
-            <div class="form-group" style="grid-column: span 2;">
+            <div class="form-group col-span-2">
                 <label>Period Type</label>
                 <select name="period_type" id="period_type" required>
                     <option value="Weekly">Weekly</option>
@@ -35,8 +35,7 @@
                 <input type="date" name="end_date" required>
             </div>
         </div>
-        
-        <div style="margin-top: 1.5rem; text-align: right;">
+        <div class="form-group" style="margin-top: 1.5rem; text-align: right;">
             <button type="submit" class="btn btn-primary">Calculate Draft Payroll</button>
         </div>
     </form>

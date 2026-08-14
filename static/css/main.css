@@ -287,12 +287,30 @@ select option:checked {
     font-weight: 700;
 }
 
+/* Custom Grids */
+.grid-2-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.grid-6-col {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+}
+
+.col-span-2 {
+    grid-column: span 2;
+}
+
 /* Tables */
 .table-wrapper {
     background: var(--bg-card);
     border-radius: 8px;
     border: 1px solid var(--border);
     overflow-x: auto;
+    width: 100%;
 }
 table {
     width: 100%;
@@ -302,6 +320,7 @@ th, td {
     padding: 1rem 1.5rem;
     text-align: left;
     border-bottom: 1px solid var(--border);
+    white-space: nowrap;
 }
 th {
     background: rgba(255,255,255,0.02);
@@ -335,30 +354,233 @@ tr:hover td {
     color: #fde047;
 }
 
+/* Mobile Sidebar Layout Elements */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-main);
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-right: 1rem;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* Forms & Filters Mobile Helpers */
+.filter-form {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.filter-form .form-group {
+    margin-bottom: 0;
+    flex: 1;
+    min-width: 200px;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
+    /* Layout */
     .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
+        left: calc(-1 * var(--sidebar-width));
+        z-index: 1000;
+        transition: left 0.3s ease;
     }
+    
+    .sidebar.active {
+        left: 0;
+    }
+    
     .content {
         margin-left: 0;
+        width: 100%;
+        max-width: 100vw;
     }
-    .nav-links {
+    
+    .mobile-menu-btn {
         display: flex;
-        flex-wrap: wrap;
-        padding: 0.5rem;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        min-height: 44px;
     }
-    .nav-links li {
-        width: 50%;
+    
+    .topbar {
+        padding: 1rem;
     }
-    .nav-links li a {
-        border-left: none;
-        border-bottom: 2px solid transparent;
+    
+    .topbar h1 {
+        font-size: 1.25rem;
     }
-    .nav-links li a:hover {
-        border-left: none;
-        border-bottom: 2px solid var(--primary);
+    
+    .container {
+        padding: 1rem;
+    }
+    
+    /* Login & Auth */
+    .auth-card {
+        padding: 1.5rem;
+        margin: 1rem;
+        width: calc(100% - 2rem);
+    }
+    
+    /* Cards and Grids */
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .grid-2-col {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .grid-6-col {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .col-span-2 {
+        grid-column: span 1;
+    }
+    
+    /* Forms */
+    .filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filter-form .form-group, .filter-form .btn {
+        width: 100%;
+    }
+    
+    .flex-between {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .flex-between .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Tables */
+    th, td {
+        padding: 0.75rem 1rem;
+    }
+    
+    /* Buttons */
+    .btn {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .btn-sm {
+        min-height: 44px;
+    }
+
+    /* Responsive Tables as Cards */
+    .responsive-table {
+        background: transparent;
+        border: none;
+    }
+    .responsive-table table, 
+    .responsive-table thead, 
+    .responsive-table tbody, 
+    .responsive-table th, 
+    .responsive-table td, 
+    .responsive-table tr { 
+        display: block; 
+    }
+    
+    .responsive-table thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    .responsive-table tr { 
+        border: 1px solid var(--border); 
+        border-radius: 8px; 
+        margin-bottom: 1rem; 
+        background: var(--bg-card); 
+    }
+    
+    .responsive-table td { 
+        border: none;
+        border-bottom: 1px solid var(--border); 
+        position: relative;
+        padding-left: 40%; 
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        min-height: 44px;
+        white-space: normal;
+    }
+    
+    .responsive-table td:before { 
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        width: 35%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+        font-weight: 600;
+        color: var(--text-muted);
+        content: attr(data-label);
+    }
+
+    .responsive-table td:last-child {
+        border-bottom: 0;
+        padding-left: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .responsive-table td.action-cell:before {
+        display: none;
+    }
+    
+    .mobile-action-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+    }
+    .mobile-full-btn {
+        width: 100%;
     }
 }
+

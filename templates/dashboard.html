@@ -26,7 +26,7 @@
     <div style="padding: 1.5rem; border-bottom: 1px solid var(--border);">
         <h2>Quick Actions</h2>
     </div>
-    <div style="padding: 1.5rem; display: flex; gap: 1rem;">
+    <div style="padding: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
         <a href="{{ url_for('attendance.index') }}" class="btn btn-primary">Mark Attendance</a>
         <a href="{{ url_for('payroll.index') }}" class="btn btn-secondary">Generate Payroll</a>
         <a href="{{ url_for('workers.add') }}" class="btn btn-secondary">Add Worker</a>

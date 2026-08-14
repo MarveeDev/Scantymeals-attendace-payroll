@@ -3,15 +3,15 @@
 {% block page_title %}Workers{% endblock %}
 
 {% block content %}
-<div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between;">
+<div class="flex-between" style="margin-bottom: 1.5rem;">
     <a href="{{ url_for('workers.add') }}" class="btn btn-primary">Add New Worker</a>
-    <div>
-        <a href="{{ url_for('workers.index', status='active') }}" class="btn {% if active_only %}btn-primary{% else %}btn-secondary{% endif %}">Active</a>
-        <a href="{{ url_for('workers.index', status='all') }}" class="btn {% if not active_only %}btn-primary{% else %}btn-secondary{% endif %}">All</a>
+    <div style="display: flex; gap: 0.5rem; width: 100%;">
+        <a href="{{ url_for('workers.index', status='active') }}" style="flex: 1" class="btn {% if active_only %}btn-primary{% else %}btn-secondary{% endif %}">Active</a>
+        <a href="{{ url_for('workers.index', status='all') }}" style="flex: 1" class="btn {% if not active_only %}btn-primary{% else %}btn-secondary{% endif %}">All</a>
     </div>
 </div>
 
-<div class="table-wrapper">
+<div class="table-wrapper responsive-table">
     <table>
         <thead>
             <tr>
@@ -26,19 +26,19 @@
         <tbody>
             {% for worker in workers %}
             <tr>
-                <td>{{ worker.staff_id }}</td>
-                <td>{{ worker.full_name }}</td>
-                <td>{{ worker.role }}</td>
-                <td>
+                <td data-label="Staff ID">{{ worker.staff_id }}</td>
+                <td data-label="Name"><strong>{{ worker.full_name }}</strong></td>
+                <td data-label="Role">{{ worker.role }}</td>
+                <td data-label="Status">
                     {% if worker.active %}
                     <span class="badge badge-present">Active</span>
                     {% else %}
                     <span class="badge badge-absent">Inactive</span>
                     {% endif %}
                 </td>
-                <td>{{ worker.date_joined }}</td>
-                <td>
-                    <a href="{{ url_for('workers.profile', worker_id=worker._id) }}" class="btn btn-sm btn-secondary">Profile</a>
+                <td data-label="Joined">{{ worker.date_joined }}</td>
+                <td class="action-cell">
+                    <a href="{{ url_for('workers.profile', worker_id=worker._id) }}" class="btn btn-sm btn-secondary mobile-full-btn">Profile</a>
                 </td>
             </tr>
             {% endfor %}

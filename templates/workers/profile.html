@@ -3,9 +3,9 @@
 {% block page_title %}Worker Profile: {{ worker.full_name }}{% endblock %}
 
 {% block content %}
-<div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between;">
+<div class="flex-between" style="margin-bottom: 1.5rem;">
     <a href="{{ url_for('workers.index') }}" class="btn btn-secondary">Back to List</a>
-    <div>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
         <a href="{{ url_for('workers.edit', worker_id=worker._id) }}" class="btn btn-primary">Edit Worker</a>
         
         {% if worker.active %}
@@ -45,7 +45,7 @@
     </div>
 </div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+<div class="grid-2-col" style="margin-top: 2rem;">
     <!-- Details -->
     <div class="auth-card" style="max-width: 100%;">
         <h3>Personal Information</h3>
@@ -85,20 +85,22 @@
 </div>
 
 <div class="table-wrapper" style="margin-top: 2rem; padding: 1.5rem;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div class="flex-between" style="margin-bottom: 1.5rem;">
         <h3>Monthly Attendance Summary</h3>
-        <form method="GET" style="display: flex; gap: 0.5rem;">
-            <select name="month" class="form-group" style="margin: 0; padding: 0.5rem;">
-                {% for m in range(1, 13) %}
-                <option value="{{ m }}" {% if m == current_month %}selected{% endif %}>{{ m }}</option>
-                {% endfor %}
-            </select>
-            <input type="number" name="year" value="{{ current_year }}" class="form-group" style="margin: 0; padding: 0.5rem; width: 80px;" required>
+        <form class="filter-form" method="GET">
+            <div class="form-group" style="display:flex; gap:0.5rem; margin:0;">
+                <select name="month" style="padding: 0.5rem;">
+                    {% for m in range(1, 13) %}
+                    <option value="{{ m }}" {% if m == current_month %}selected{% endif %}>{{ m }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="year" value="{{ current_year }}" style="padding: 0.5rem; width: 80px;" required>
+            </div>
             <button type="submit" class="btn btn-secondary" style="padding: 0.5rem 1rem;">View</button>
         </form>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; margin-bottom: 2rem;">
+    <div class="grid-6-col" style="margin-bottom: 2rem;">
         <div class="stat-card" style="padding: 1rem;">
             <div class="stat-title">Eligible</div>
             <div class="stat-value" style="font-size: 1.5rem;">{{ attendance_summary.eligible_days }}</div>
@@ -157,7 +159,7 @@
             {% endfor %}
         </div>
         
-        <div style="display: flex; justify-content: center; gap: 1.5rem; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);">
+        <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted); flex-wrap: wrap;">
             <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 10px; height: 10px; border-radius: 50%; background-color: #48bb78;"></div> Present</div>
             <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 10px; height: 10px; border-radius: 50%; background-color: #f56565;"></div> Absent</div>
             <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 10px; height: 10px; border-radius: 50%; background-color: #a0aec0;"></div> Not Marked</div>
